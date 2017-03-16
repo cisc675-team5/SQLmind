@@ -57,7 +57,7 @@ def processSQLFile(sqlFileName):
 	fd = open(sqlFileName, 'r')
 	sqlFile = fd.read()
 	fd.close()
-	sqlFuntions = re.split('CREATE|END',sqlFile)
+	sqlFuntions = re.split('CREATE',sqlFile)
 	for function in sqlFuntions:
 		processSQLfunction(function)
 
