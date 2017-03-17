@@ -8,7 +8,7 @@ sqlFileName = sys.argv[1]
 
 
 
-def processInnerfunction(ends):
+def processInnerfunction(ends): #extract the function name if it's in a block
 	global Vertexes
 	if len(ends)==0:
 		return
@@ -17,7 +17,7 @@ def processInnerfunction(ends):
 
 
 
-def processBlock(block):
+def processBlock(block): #extract function name in block
 
 	global Vertexes
 	global Store 
@@ -33,7 +33,7 @@ def processBlock(block):
 
 
 
-def processLine(line):
+def processLine(line): #split line by operators or semicolon
 	blocks=filter(None, re.split("[ \-\+\=\/\;]+", line))
 	if len(blocks)==0:
 		return
@@ -44,7 +44,7 @@ def processLine(line):
 		processBlock(block)
 
 
-def processSQLfunction(function):
+def processSQLfunction(function): #split function by '\n'
 	global Store
 	lines = function.split('\n')
 	for line in lines:
@@ -53,7 +53,7 @@ def processSQLfunction(function):
 
 
 				
-def processSQLFile(sqlFileName):
+def processSQLFile(sqlFileName): #read in the file and split the file by 'CREATE'
 	fd = open(sqlFileName, 'r')
 	sqlFile = fd.read()
 	fd.close()
