@@ -14,7 +14,11 @@ class SQLProcessor:
 		self.__functions = Set()
 		self.__processSQLFile(sqlFileName)
 		self.__resultList = []
+		#print "original set:"
+		#print self.__result
 		self.__removeInvalidNode()
+		#print "purified set:"
+		#print self.__resultList
 
 
 
@@ -90,6 +94,8 @@ class SQLProcessor:
 			blocks=filter(None, re.split("[ \-\+\=\/\;]+", line))
 			if len(blocks)>0:
 				self.__functions.add(blocks[1])
+		#print "selfdefined function names:"
+		#print self.__functions
 
 
 	def __removeInvalidNode(self):
@@ -104,13 +110,3 @@ class SQLProcessor:
 	def getResult(self):
 		return self.__resultList
 
-
-
-
-def main():
-	processor = SQLProcessor(sys.argv[1])
-	print processor.getResult()
-
-
-if __name__=='__main__':
-	main()
