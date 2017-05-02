@@ -4,7 +4,6 @@ from mekk.xmind import XMindDocument
 
 def createMindmap(list):  
     OUTPUT = "test.xmind"
-
     file_name = "SQL Test"  
 
     parent=list[0]
@@ -16,6 +15,7 @@ def createMindmap(list):
 
     child_index = 0
     parent_node = 0
+    
     for index, function in enumerate(parent, start=0):  # default is zero
         if index == 0:
             parent_node = root_topic.add_subtopic(function)
