@@ -1,24 +1,20 @@
 import sys
 
 from SQLProcessor import SQLProcessor
+from SQLInputConvertor import dataConvertor
+from SQLCreateMindmap import createMindmap
 
-
-def dataConvertor(sqlFunctions):
-	result=[]
-	parent=[]
-	child=[]
-	result.append(parent)
-	result.append(child)
-	for function in sqlFunctions:
-		parent.append(function[0])
-		child.append(function[1])
-	return result
 
 
 def main():
+
 	processor = SQLProcessor(sys.argv[1])
-	#print processor.getResult()
-	print dataConvertor(processor.getResult())
+
+	standardInput = dataConvertor(processor.getResult())
+
+	print standardInput
+
+	createMindmap(standardInput)
 
 
 if __name__=='__main__':

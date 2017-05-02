@@ -1,33 +1,37 @@
 from mekk.xmind import XMindDocument
 
-OUTPUT = "test.xmind"
 
-file_name = "SQL Test"
-parent = ["Parent1", "Parent1", "Parent1", "Parent2", "Parent2", "Parent3", "Parent3", "Parent3", "Parent3", "Parent4", "Parent4"]
-child = ["Child1", "Child2", "Child3", "Child4", "Child5", "Child6", "Child7", "Child8", "Child8", "Child10", "Child11"]
-    
-xmind = XMindDocument.create(file_name, file_name)
-first_sheet = xmind.get_first_sheet()
-root_topic = first_sheet.get_root_topic()
 
-child_index = 0
-parent_node = 0
-for index, function in enumerate(parent, start=0):  # default is zero
-    if index == 0:
-        parent_node = root_topic.add_subtopic(function)
-        child_node = parent_node.add_subtopic(child[child_index])
-        child_index += 1
-    else:
-        if parent[index] == parent[index-1]:
-            parent_node.add_subtopic(child[child_index])
-            child_index += 1
-        else:
+def createMindmap(list):  
+    OUTPUT = "test.xmind"
+
+    file_name = "SQL Test"  
+
+    parent=list[0]
+    child=list[1]
+
+    xmind = XMindDocument.create(file_name, file_name)
+    first_sheet = xmind.get_first_sheet()
+    root_topic = first_sheet.get_root_topic()
+
+    child_index = 0
+    parent_node = 0
+    for index, function in enumerate(parent, start=0):  # default is zero
+        if index == 0:
             parent_node = root_topic.add_subtopic(function)
             child_node = parent_node.add_subtopic(child[child_index])
             child_index += 1
+        else:
+            if parent[index] == parent[index-1]:
+                parent_node.add_subtopic(child[child_index])
+                child_index += 1
+            else:
+                parent_node = root_topic.add_subtopic(function)
+                child_node = parent_node.add_subtopic(child[child_index])
+                child_index += 1
 
-xmind.save(OUTPUT)
-print ("Saved to", OUTPUT)
+    xmind.save(OUTPUT)
+    print ("Saved to", OUTPUT)
 
 
 
