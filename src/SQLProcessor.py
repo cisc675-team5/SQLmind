@@ -1,26 +1,51 @@
 import sys
 import re
 from sets import Set
+from SQLDataStructure import FunctionLine
 
 
 class SQLProcessor:
 
-
-
 	def __init__(self,sqlFileName):
+		self.__keyWord =''
 		self.__dict__ = {}
 		self.__Store = []
 		self.__result = Set()
 		self.__functions = Set()
-		self.__processSQLFile(sqlFileName)
+		self.__functionLineDictionary = {}
+		self.__counter = 0
 		self.__resultList = []
-		#print "original set:"
-		#print self.__result
+		self.__finalResult = []
+
+		self.__createDictionary(sqlFileName)
+		self.__processSQLFile(sqlFileName)
 		self.__removeInvalidNode()
-		#print "purified set:"
-		#print self.__resultList
+		self.__convertTofunctionLineFormat()
 
 
+
+#-----------------------------------------------------------------------------
+	def __createDictionary(self,sqlFile):
+		fd = open(sqlFile, 'r')
+		sqlFile = fd.read()
+		fd.close()
+		lines = sqlFile.split('\n')
+		blocks = lines[0].split()
+		self.__keyWord = blocks[0]
+		for l in lines:
+			blocks = l.split()
+			if self.__containKeyWords(blocks):
+				self.__functionLineDictionary[blocks[2]] = self.__counter
+			self.__counter = self.__counter+1
+
+
+	def __containKeyWords(self,blocks):
+		if len(blocks) == 0:
+			return False
+		if blocks[0] == self.__keyWord:
+			return True
+		return False
+#-----------------------------------------------------------------------------
 
 
 	def __processInnerfunction(self,ends): #extract the function name if it's in a block
@@ -28,7 +53,6 @@ class SQLProcessor:
 			return
 		for e in ends:
 			self.__processBlock(e)
-
 
 
 
@@ -45,7 +69,6 @@ class SQLProcessor:
 
 
 
-
 	def __processLine(self,line): #split line by operators or semicolon
 		blocks=filter(None, re.split("[ \-\+\=\/\;]+", line))
 		if len(blocks)==0:
@@ -58,7 +81,6 @@ class SQLProcessor:
 
 
 
-
 	def __processSQLfunction(self,function): #split function by '\n'
 		lines = function.split('\n')
 		for line in lines:
@@ -67,23 +89,20 @@ class SQLProcessor:
 
 
 
-
 	def __processSQLFile(self,sqlFileName): #read in the file and split the file by 'CREATE'
 		fd = open(sqlFileName, 'r')
 		sqlFile = fd.read()
 		fd.close()
-		sqlFuntions = re.split('CREATE',sqlFile)
+		sqlFuntions = re.split(self.__keyWord,sqlFile)
 		self.__extractDefinedSQLFunction(sqlFuntions)
 		for function in sqlFuntions:
 			self.__processSQLfunction(function)
 
 
 
-
 	def __extractDefinedSQLFunction(self,sqlFunctions):
 		for function in sqlFunctions:
 			self.__getNameOfFunction(function)
-
 
 
 
@@ -94,8 +113,6 @@ class SQLProcessor:
 			blocks=filter(None, re.split("[ \-\+\=\/\;]+", line))
 			if len(blocks)>0:
 				self.__functions.add(blocks[1])
-		#print "selfdefined function names:"
-		#print self.__functions
 
 
 	def __removeInvalidNode(self):
@@ -107,6 +124,15 @@ class SQLProcessor:
 
 
 
+	def __convertTofunctionLineFormat(self):
+		for i in xrange(0,len(self.__resultList)):
+			pfunction = self.__resultList[i][0]
+			pline = self.__functionLineDictionary[self.__resultList[i][0]] 
+			cfunction = self.__resultList[i][1]
+			cline = self.__functionLineDictionary[self.__resultList[i][1]] 
+			self.__finalResult.append(tuple([FunctionLine(pfunction,pline),FunctionLine(cfunction,cline)]))
+
+
 	def getResult(self):
-		return self.__resultList
+		return self.__finalResult
 

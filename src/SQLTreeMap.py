@@ -7,14 +7,14 @@ def constructTreeMap(root,parents,children,distingushParentList):
 	flagList=[0]*len(parents)
 
 	for node in distingushParentList:
-		Current.append(root.add_subtopic(node))
+		Current.append(root.add_subtopic(node.function))
 
 	#use BFS to build the tree
 	while not Finshed(flagList):
 		for i in xrange(0,len(parents)):
 			for node in Current:
-				if parents[i]==node.get_title():
-					Next.append(node.add_subtopic(children[i]))
+				if parents[i].function==node.get_title():
+					Next.append(node.add_subtopic(children[i].function))
 					#has been set
 					flagList[i]=1
 
